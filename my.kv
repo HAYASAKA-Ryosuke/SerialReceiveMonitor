@@ -1,0 +1,30 @@
+#:kivy 1.8.0
+
+<sampleWidget>:
+    labelstatus: status
+    textAD: textADval
+    buttonADEnable: ButtonADEnableval
+
+    #Status
+    Label:
+        id: status
+        font_size: 50
+        center_x: (root.width/2)
+        top: root.top-80
+        color: [1,0,0,1]
+        text: 'ADConvert'
+
+    #textADval
+    TextInput:
+        id: textADval
+        center_x: (root.width/2)
+        size: 440,100
+        top: root.top-180
+
+    #ButtonADEnable
+    Button:
+        id: ButtonADEnableval
+        center_x: root.width/2
+        size: 140,70
+        top: root.top-480
+        text: 'Start'
