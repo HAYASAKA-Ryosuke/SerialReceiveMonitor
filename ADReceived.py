@@ -1,26 +1,28 @@
 import serial
-import thread
-
+import threading
+import time
 
 class SerialMonitor:
-
     def __init__(self,port,baudrate):
-        self.ser = serial.Serial(port,baudrate)
-        #self.ser = serial.serial_for_url(port,timeout=1)
+        #self.ser = serial.serial_for_url("loop://",timeout=1)
+        self.port=port
+        self.baudrate=baudrate
+        self.closing = False
+        self.sleeptime=0.00005
 
-    def open(self):
-        self.ser.open()
+    def start(self):
+        self.closing = True
+        self.ser = serial.Serial(self.port,self.baudrate)
+        self.th=threading.Thread(target=self._receive)
+        self.th.start()
 
-    def close(self):
+    def stop(self):
+        self.closing = False
+        self.th.join()
         self.ser.close()
 
     def _receive(self):
-        readbuffer = ''
-        while True:
-            readbuffer += self.ser.read(self.ser.inWaiting() or 1)
-            if '\n' in readbuffer:
-                print self.readbuffer.rstrip()
-                readbuffer = ""
-
-    def receive(self):
-        thread.start_new_thread(self._receive)
+        self.data=""
+        while self.closing:
+            self.data+=str(self.ser.readline())
+            time.sleep(self.sleeptime)

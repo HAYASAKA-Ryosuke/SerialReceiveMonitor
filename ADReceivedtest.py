@@ -1,14 +1,18 @@
 import serial
 import unittest
 import io
+import ADReceived
+import time
 
 class SerialMonitorTest(unittest.TestCase):
     def testSerial(self):
-        sm = SerialMonitor('loop://',38400)
-        ser = serial.serial_for_url('loop://',timeout=1)
-        sio = io.TextIOWrapper(io.BufferedRWPair(sm,ser))
-        sio.write(unicode("hello\n"))
-        sio.flush() # it is buffering. required to get the data out *now*
-        #hello = sio.readline()
-        #print hello == unicode("hello\n")
+        s1 = ADReceived.SerialMonitor("/dev/tty.usbserial",38400)
+        s1.start()
+        time.sleep(1.5) 
+        print(s1.data)
+        s1.stop()
+        s1.start()
+        time.sleep(1.5) 
+        print(s1.data)
+        s1.stop()
 unittest.main()
