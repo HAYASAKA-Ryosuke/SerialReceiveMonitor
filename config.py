@@ -3,9 +3,6 @@
 import ConfigParser
 
 class ConfigRead(object):
-    adport = ""
-    baudrate = ""
-
 
     def __init__(self):
         config = ConfigParser.SafeConfigParser()
@@ -18,6 +15,5 @@ class ConfigRead(object):
             return self.adport
         if param == 'BaudRate':
             return self.baudrate
-
         if param is None:
             return {'ADPort': self.adport, 'BaudRate': self.baudrate}

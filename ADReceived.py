@@ -7,7 +7,7 @@ class SerialMonitor:
     def __init__(self,port,baudrate):
         #self.ser = serial.serial_for_url("loop://",timeout=1)
         self.port=port
-        self.baudrate=baudrate
+        self.baudrate=int(baudrate)
         self.closing = False
         self.sleeptime=0.00005
 
@@ -28,8 +28,11 @@ class SerialMonitor:
         while self.closing:
             if self.datetimeadd:
                 timeinfo=str(datetime.datetime.now().hour)+":"+str(datetime.datetime.now().minute)+":"+str(datetime.datetime.now().second)+"."+str(datetime.datetime.now().microsecond)
-                #self.data+=str(datetime.datetime.now())+","+str(self.ser.readline())
                 self.data+=timeinfo+","+str(self.ser.readline())
             else:
                 self.data+=str(self.ser.readline())
             time.sleep(self.sleeptime)
+    def datapop(self):
+        data=self.data
+        self.data=""
+        return data

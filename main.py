@@ -10,6 +10,8 @@ from kivy.clock import Clock
 import config
 import datetime
 import ADReceived
+import threading
+import time
 
 
 class sampleWidget(Widget):
@@ -20,15 +22,29 @@ class sampleWidget(Widget):
 
 class MyApp(App):
 
+    def outputtext(self):
+        while self.thflag:
+            #self.root.textAD.text+=str(self.adrecv.data)
+            data=self.adrecv.datapop()
+            f=open(self.filename,'a')
+            f.writelines(data)
+            self.root.textAD.text+=data
+            f.close()
+            #print(self.adrecv.data)
+
     def buttonADEnable_clicked(self, src):
-        if self.root.buttonADEnable.text == "start":
-            self.root.buttonADEnable.text = "stop"
-            self.adrecv.open()
-            self.adrecv.receive()
-            #self.adrecv.open()
+        if self.root.buttonADEnable.text == "Start":
+            self.root.buttonADEnable.text = "Stop"
+            self.filename=str(datetime.datetime.now().month)+'-'+str(datetime.datetime.now().day)+'-'+str(datetime.datetime.now().hour)+'-'+str(datetime.datetime.now().minute)+'-'+str(datetime.datetime.now().second)+'-'+str(datetime.datetime.now().microsecond)+'.csv'
+            self.adrecv.start(datetimeadd=True)
+            self.th = threading.Thread(target=self.outputtext)
+            self.thflag=True
+            self.th.start()
         else:
-            self.root.buttonADEnable.text = "start"
-            self.adrecv.close()
+            self.root.buttonADEnable.text = "Start"
+            self.adrecv.stop()
+            self.thflag=False
+            self.th.join()
 
     def build(self):
         self.root = sampleWidget()
@@ -36,7 +52,8 @@ class MyApp(App):
         self.conf = config.ConfigRead().read()
         self.adport = self.conf['ADPort']
         self.baudrate = self.conf['BaudRate']
-        self.adrecv = ADReceived.SerialMonitor(self.adport,self.baudrate)
+        #self.adrecv = ADReceived.SerialMonitor(self.adport,self.baudrate)
+        self.adrecv = ADReceived.SerialMonitor("/dev/tty.usbserial",38400)
 
         return self.root
 

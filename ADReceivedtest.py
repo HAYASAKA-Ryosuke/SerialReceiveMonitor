@@ -1,6 +1,4 @@
-import serial
 import unittest
-import io
 import ADReceived
 import time
 
