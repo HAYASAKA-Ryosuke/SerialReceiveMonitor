@@ -29,7 +29,8 @@ class SerialMonitor:
         self.data = ""
         while self.closing:
             if self.datetimeadd:
-                timeinfo = str(datetime.datetime.now().hour)+":"+str(datetime.datetime.now().minute)+":"+str(datetime.datetime.now().second)+"."+str(datetime.datetime.now().microsecond)
+                dtnow = datetime.datetime.now()
+                timeinfo = str(dtnow.hour)+":"+str(dtnow.minute)+":"+str(dtnow.second)+"."+str(dtnow.microsecond)
                 self.data += timeinfo+","+str(self.ser.readline())
             else:
                 self.data += str(self.ser.readline())
